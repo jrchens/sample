@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.cms.mapper.CmsArticleMapper">
+  <resultMap id="BaseResultMap" type="me.sample.cms.domain.CmsArticle">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="category_nodename" jdbcType="VARCHAR" property="categoryNodename" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="summary" jdbcType="VARCHAR" property="summary" />
+    <result column="pub_date" jdbcType="DATE" property="pubDate" />
+    <result column="article_from" jdbcType="VARCHAR" property="articleFrom" />
+    <result column="article_editor" jdbcType="VARCHAR" property="articleEditor" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="disabled" jdbcType="BIT" property="disabled" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="cruser" jdbcType="VARCHAR" property="cruser" />
+    <result column="crtime" jdbcType="TIMESTAMP" property="crtime" />
+    <result column="mduser" jdbcType="VARCHAR" property="mduser" />
+    <result column="mdtime" jdbcType="TIMESTAMP" property="mdtime" />
+    <result column="rich_content" jdbcType="LONGVARCHAR" property="richContent" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cms_article
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.sample.cms.domain.CmsArticle">
+    insert into cms_article (id, parent_id, category_nodename, 
+      title, summary, pub_date, 
+      article_from, article_editor, state, 
+      disabled, deleted, cruser, 
+      crtime, mduser, mdtime, 
+      rich_content)
+    values (#{id,jdbcType=INTEGER}, #{parentId,jdbcType=INTEGER}, #{categoryNodename,jdbcType=VARCHAR}, 
+      #{title,jdbcType=VARCHAR}, #{summary,jdbcType=VARCHAR}, #{pubDate,jdbcType=DATE}, 
+      #{articleFrom,jdbcType=VARCHAR}, #{articleEditor,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, 
+      #{disabled,jdbcType=BIT}, #{deleted,jdbcType=BIT}, #{cruser,jdbcType=VARCHAR}, 
+      #{crtime,jdbcType=TIMESTAMP}, #{mduser,jdbcType=VARCHAR}, #{mdtime,jdbcType=TIMESTAMP}, 
+      #{richContent,jdbcType=LONGVARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.cms.domain.CmsArticle">
+    update cms_article
+    set parent_id = #{parentId,jdbcType=INTEGER},
+      category_nodename = #{categoryNodename,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      summary = #{summary,jdbcType=VARCHAR},
+      pub_date = #{pubDate,jdbcType=DATE},
+      article_from = #{articleFrom,jdbcType=VARCHAR},
+      article_editor = #{articleEditor,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      disabled = #{disabled,jdbcType=BIT},
+      deleted = #{deleted,jdbcType=BIT},
+      cruser = #{cruser,jdbcType=VARCHAR},
+      crtime = #{crtime,jdbcType=TIMESTAMP},
+      mduser = #{mduser,jdbcType=VARCHAR},
+      mdtime = #{mdtime,jdbcType=TIMESTAMP},
+      rich_content = #{richContent,jdbcType=LONGVARCHAR}
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, parent_id, category_nodename, title, summary, pub_date, article_from, 
+    article_editor, state, disabled, deleted, cruser, crtime, mduser, mdtime, rich_content
+    from cms_article
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, parent_id, category_nodename, title, summary, pub_date, article_from, 
+    article_editor, state, disabled, deleted, cruser, crtime, mduser, mdtime, rich_content
+    from cms_article
+    where deleted = 0
+  </select>
+  
+  <select id="query" parameterType="me.sample.cms.domain.CmsArticle" resultMap="BaseResultMap">
+    select id, parent_id, category_nodename, title, summary, pub_date, article_from, 
+    article_editor, state, disabled, deleted, cruser, crtime, mduser, mdtime, rich_content
+    from cms_article
+    <where>
+        deleted = 0
+        <include refid="queryCondition" />
+    </where>
+  </select>
+  
+  <sql id="queryCondition">
+      <if test="title != null">
+        <bind name="title" value="'%' + title + '%'" />
+        and title like #{title}
+      </if>
+      <if test="categoryNodename != null">
+        and category_nodename = #{categoryNodename}
+      </if>
+  </sql>
+</mapper>

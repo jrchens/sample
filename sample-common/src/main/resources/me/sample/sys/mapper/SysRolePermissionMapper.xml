@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.sys.mapper.SysRolePermissionMapper">
+  <resultMap id="BaseResultMap" type="me.sample.sys.domain.SysRolePermission">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="rolename" jdbcType="VARCHAR" property="rolename" />
+    <result column="permission_code" jdbcType="VARCHAR" property="permissionCode" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_role_permission
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.sample.sys.domain.SysRolePermission">
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_role_permission (id, rolename, permission_code
+      )
+    values (#{id,jdbcType=INTEGER}, #{rolename,jdbcType=VARCHAR}, #{permissionCode,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.sys.domain.SysRolePermission">
+    update sys_role_permission
+    set rolename = #{rolename,jdbcType=VARCHAR},
+      permission_code = #{permissionCode,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, rolename, permission_code
+    from sys_role_permission
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, rolename, permission_code
+    from sys_role_permission
+  </select>
+  
+  
+  
+  <select id="queryByRolename" resultType="me.sample.sys.domain.SysPermission">
+    select sys_permission.*
+    from sys_role_permission left join sys_permission on sys_role_permission.permission_code = sys_permission.permission_code
+    where sys_permission.disabled = 0 and sys_permission.deleted = 0 and sys_role_permission.rolename = #{rolename}
+  </select>
+  
+  <select id="queryByPermissionCode" resultType="me.sample.sys.domain.SysRole">
+    select sys_role.*
+    from sys_role_permission left join sys_role on sys_role_permission.rolename = sys_role.rolename
+    where sys_role.disabled = 0 and sys_role.deleted = 0 and sys_role_permission.permission_code = #{permissionCode}
+  </select>
+  
+  <delete id="deleteByRolename" parameterType="java.lang.String">
+    delete from sys_role_permission where rolename = #{rolename}
+  </delete>
+  
+  <delete id="deleteByPermissionCode" parameterType="java.lang.String">
+    delete from sys_role_permission where permission_code = #{permissionCode}
+  </delete>
+  
+  <delete id="deleteByRolenamePermissionCode">
+    delete from sys_role_permission where rolename = #{rolename} and permission_code = #{permissionCode}
+  </delete>
+  
+</mapper>

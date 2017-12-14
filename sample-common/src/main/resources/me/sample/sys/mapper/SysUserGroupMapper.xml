@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.sys.mapper.SysUserGroupMapper">
+  <resultMap id="BaseResultMap" type="me.sample.sys.domain.SysUserGroup">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="groupname" jdbcType="VARCHAR" property="groupname" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_user_group
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.sample.sys.domain.SysUserGroup">
+    insert into sys_user_group ( username, groupname
+      )
+    values (#{username,jdbcType=VARCHAR}, #{groupname,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.sys.domain.SysUserGroup">
+    update sys_user_group
+    set username = #{username,jdbcType=VARCHAR},
+      groupname = #{groupname,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, username, groupname
+    from sys_user_group
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, username, groupname
+    from sys_user_group
+  </select>
+  
+  <select id="queryByUsername" resultType="me.sample.sys.domain.SysGroup">
+    select sys_group.*
+    from sys_user_group left join sys_group on sys_user_group.groupname = sys_group.groupname
+    where sys_group.deleted = 0 and sys_user_group.username = #{username}
+  </select>
+  
+  <select id="queryByGroupname" resultType="me.sample.sys.domain.SysUser">
+    select sys_user.*
+    from sys_user_group left join sys_user on sys_user_group.username = sys_user.username
+    where sys_user.deleted = 0 and sys_user_group.groupname = #{groupname}
+  </select>
+  
+  <delete id="deleteByUsername" parameterType="java.lang.String">
+    delete from sys_user_group where username = #{username}
+  </delete>
+  
+  <delete id="deleteByGroupname" parameterType="java.lang.String">
+    delete from sys_user_group where groupname = #{groupname}
+  </delete>
+  
+  <delete id="deleteByUserGroupname">
+    delete from sys_user_group where username = #{username} and groupname = #{groupname}
+  </delete>
+</mapper>

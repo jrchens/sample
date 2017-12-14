@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.cms.mapper.CmsConfigMapper">
+  <resultMap id="BaseResultMap" type="me.sample.cms.domain.CmsConfig">
+    <id column="config_code" jdbcType="VARCHAR" property="configCode" />
+    <result column="config_type" jdbcType="VARCHAR" property="configType" />
+    <result column="config_label" jdbcType="VARCHAR" property="configLabel" />
+    <result column="config_content" jdbcType="VARCHAR" property="configContent" />
+    <result column="config_value" jdbcType="VARCHAR" property="configValue" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from cms_config
+    where config_code = #{configCode,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="me.sample.cms.domain.CmsConfig">
+    insert into cms_config (config_code, config_type, config_label, 
+      config_content, config_value)
+    values (#{configCode,jdbcType=VARCHAR}, #{configType,jdbcType=VARCHAR}, #{configLabel,jdbcType=VARCHAR}, 
+      #{configContent,jdbcType=VARCHAR}, #{configValue,jdbcType=VARCHAR})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.cms.domain.CmsConfig">
+    update cms_config
+    set config_type = #{configType,jdbcType=VARCHAR},
+      config_label = #{configLabel,jdbcType=VARCHAR},
+      config_content = #{configContent,jdbcType=VARCHAR},
+      config_value = #{configValue,jdbcType=VARCHAR}
+    where config_code = #{configCode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select config_code, config_type, config_label, config_content, config_value
+    from cms_config
+    where config_code = #{configCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select config_code, config_type, config_label, config_content, config_value
+    from cms_config
+  </select>
+  
+  
+  <select id="query" resultMap="BaseResultMap">
+    select config_code, config_type, config_label, config_content, config_value
+    from cms_config
+    <trim prefix="WHERE" prefixOverrides="and | or">
+        <include refid="queryCondition"></include>
+    </trim>
+  </select>
+  
+  <sql id="queryCondition">
+    <if test="configLabel != null">
+        <bind name="configLabel" value="'%' + configLabel + '%'" />
+        AND config_label like #{configLabel}
+    </if>
+    <if test="configValue != null">
+        <bind name="configValue" value="'%' + configValue + '%'" />
+        AND config_value like #{configValue}
+    </if>
+  </sql>
+</mapper>

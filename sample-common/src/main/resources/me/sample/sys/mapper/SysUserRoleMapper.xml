@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.sys.mapper.SysUserRoleMapper">
+  <resultMap id="BaseResultMap" type="me.sample.sys.domain.SysUserRole">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="rolename" jdbcType="VARCHAR" property="rolename" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_user_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.sample.sys.domain.SysUserRole">
+    insert into sys_user_role (username, rolename
+      )
+    values (#{username,jdbcType=VARCHAR}, #{rolename,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.sys.domain.SysUserRole">
+    update sys_user_role
+    set username = #{username,jdbcType=VARCHAR},
+      rolename = #{rolename,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, username, rolename
+    from sys_user_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, username, rolename
+    from sys_user_role
+  </select>
+  
+  
+  <select id="queryByUsername" resultType="me.sample.sys.domain.SysRole">
+    select sys_role.*
+    from sys_user_role left join sys_role on sys_user_role.rolename = sys_role.rolename
+    where sys_role.deleted = 0 and sys_user_role.username = #{username}
+  </select>
+  
+  <select id="queryByRolename" resultType="me.sample.sys.domain.SysUser">
+    select sys_user.*
+    from sys_user_role left join sys_user on sys_user_role.username = sys_user.username
+    where sys_user.deleted = 0 and sys_user_role.rolename = #{rolename}
+  </select>
+  
+  <delete id="deleteByUsername" parameterType="java.lang.String">
+    delete from sys_user_role where username = #{username}
+  </delete>
+  
+  <delete id="deleteByRolename" parameterType="java.lang.String">
+    delete from sys_user_role where rolename = #{rolename}
+  </delete>
+  
+  <delete id="deleteByUserRolename">
+    delete from sys_user_role where username = #{username} and rolename = #{rolename}
+  </delete>
+</mapper>

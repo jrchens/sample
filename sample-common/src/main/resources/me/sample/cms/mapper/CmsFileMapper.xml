@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.cms.mapper.CmsFileMapper">
+  <resultMap id="BaseResultMap" type="me.sample.cms.domain.CmsFile">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="article_id" jdbcType="INTEGER" property="articleId" />
+    <result column="original_file_name" jdbcType="VARCHAR" property="originalFileName" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="file_size" jdbcType="BIGINT" property="fileSize" />
+    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
+    <result column="save_path" jdbcType="VARCHAR" property="savePath" />
+    <result column="relative_path" jdbcType="VARCHAR" property="relativePath" />
+    <result column="file_sha1" jdbcType="VARCHAR" property="fileSha1" />
+    <result column="owner" jdbcType="VARCHAR" property="owner" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="cruser" jdbcType="VARCHAR" property="cruser" />
+    <result column="crtime" jdbcType="TIMESTAMP" property="crtime" />
+    <result column="mduser" jdbcType="VARCHAR" property="mduser" />
+    <result column="mdtime" jdbcType="TIMESTAMP" property="mdtime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from cms_file
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.sample.cms.domain.CmsFile">
+    <!-- <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey> -->
+    insert into cms_file (article_id,original_file_name, file_name, 
+      file_size, file_type, save_path, relative_path,
+      file_sha1, owner, deleted, 
+      cruser, crtime, mduser, 
+      mdtime)
+    values (#{articleId,jdbcType=INTEGER}, #{originalFileName,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 
+      #{fileSize,jdbcType=BIGINT}, #{fileType,jdbcType=VARCHAR}, #{savePath,jdbcType=VARCHAR}, #{relativePath,jdbcType=VARCHAR}, 
+      #{fileSha1,jdbcType=VARCHAR}, #{owner,jdbcType=VARCHAR}, #{deleted,jdbcType=BIT}, 
+      #{cruser,jdbcType=VARCHAR}, #{crtime,jdbcType=TIMESTAMP}, #{mduser,jdbcType=VARCHAR}, 
+      #{mdtime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.cms.domain.CmsFile">
+    update cms_file
+    set article_id = #{articleId,jdbcType=INTEGER},
+      original_file_name = #{originalFileName,jdbcType=VARCHAR},
+      file_name = #{fileName,jdbcType=VARCHAR},
+      file_size = #{fileSize,jdbcType=BIGINT},
+      file_type = #{fileType,jdbcType=VARCHAR},
+      save_path = #{savePath,jdbcType=VARCHAR},
+      relative_path = #{relativePath,jdbcType=VARCHAR},
+      file_sha1 = #{fileSha1,jdbcType=VARCHAR},
+      owner = #{owner,jdbcType=VARCHAR},
+      deleted = #{deleted,jdbcType=BIT},
+      cruser = #{cruser,jdbcType=VARCHAR},
+      crtime = #{crtime,jdbcType=TIMESTAMP},
+      mduser = #{mduser,jdbcType=VARCHAR},
+      mdtime = #{mdtime,jdbcType=TIMESTAMP}
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, article_id, original_file_name, file_name, file_size, file_type, save_path, relative_path, file_sha1, 
+    owner, deleted, cruser, crtime, mduser, mdtime
+    from cms_file
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, article_id, original_file_name, file_name, file_size, file_type, save_path, relative_path, file_sha1, 
+    owner, deleted, cruser, crtime, mduser, mdtime
+    from cms_file
+    where deleted = 0 
+  </select>
+  
+  <select id="query" parameterType="me.sample.cms.domain.CmsFile" resultMap="BaseResultMap">
+    select id, article_id, original_file_name, file_name, file_size, file_type, save_path, relative_path, file_sha1, 
+    owner, deleted, cruser, crtime, mduser, mdtime
+    from cms_file
+    <where>
+        deleted = 0
+        <include refid="queryCondition" />
+    </where>
+  </select>
+  
+  <sql id="queryCondition">
+      <if test="originalFileName != null">
+        <bind name="originalFileName" value="'%' + originalFileName + '%'" />
+        and original_file_name like #{originalFileName}
+      </if>
+  </sql>
+  
+  <select id="queryByFileSha1" resultMap="BaseResultMap">
+    select id, article_id, original_file_name, file_name, file_size, file_type, save_path, relative_path, file_sha1, 
+    owner, deleted, cruser, crtime, mduser, mdtime
+    from cms_file
+    where deleted = 0 and file_sha1 = #{fileSha1,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="queryByArticleId" resultMap="BaseResultMap">
+    select id, article_id, original_file_name, file_name, file_size, file_type, save_path, relative_path, file_sha1, 
+    owner, deleted, cruser, crtime, mduser, mdtime
+    from cms_file
+    where deleted = 0 and article_id = #{articleId,jdbcType=INTEGER}
+  </select>
+</mapper>

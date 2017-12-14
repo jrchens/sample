@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="me.sample.sys.mapper.SysPermissionMapper">
+  <resultMap id="BaseResultMap" type="me.sample.sys.domain.SysPermission">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="pid" jdbcType="INTEGER" property="pid" />
+    <result column="permission_code" jdbcType="VARCHAR" property="permissionCode" />
+    <result column="viewname" jdbcType="VARCHAR" property="viewname" />
+    <result column="permission_content" jdbcType="VARCHAR" property="permissionContent" />
+    <result column="disabled" jdbcType="BIT" property="disabled" />
+    <result column="deleted" jdbcType="BIT" property="deleted" />
+    <result column="cruser" jdbcType="VARCHAR" property="cruser" />
+    <result column="crtime" jdbcType="TIMESTAMP" property="crtime" />
+    <result column="mduser" jdbcType="VARCHAR" property="mduser" />
+    <result column="mdtime" jdbcType="TIMESTAMP" property="mdtime" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from sys_permission
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="me.sample.sys.domain.SysPermission">
+    insert into sys_permission (id, pid, permission_code, 
+      viewname, permission_content, disabled, 
+      deleted, cruser, crtime, 
+      mduser, mdtime)
+    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{permissionCode,jdbcType=VARCHAR}, 
+      #{viewname,jdbcType=VARCHAR}, #{permissionContent,jdbcType=VARCHAR}, #{disabled,jdbcType=BIT}, 
+      #{deleted,jdbcType=BIT}, #{cruser,jdbcType=VARCHAR}, #{crtime,jdbcType=TIMESTAMP}, 
+      #{mduser,jdbcType=VARCHAR}, #{mdtime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="me.sample.sys.domain.SysPermission">
+    update sys_permission
+    set pid = #{pid,jdbcType=INTEGER},
+      permission_code = #{permissionCode,jdbcType=VARCHAR},
+      viewname = #{viewname,jdbcType=VARCHAR},
+      permission_content = #{permissionContent,jdbcType=VARCHAR},
+      disabled = #{disabled,jdbcType=BIT},
+      deleted = #{deleted,jdbcType=BIT},
+      cruser = #{cruser,jdbcType=VARCHAR},
+      crtime = #{crtime,jdbcType=TIMESTAMP},
+      mduser = #{mduser,jdbcType=VARCHAR},
+      mdtime = #{mdtime,jdbcType=TIMESTAMP}
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, pid, permission_code, viewname, permission_content, disabled, deleted, 
+    cruser, crtime, mduser, mdtime
+    from sys_permission
+    where deleted = 0 and id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, pid, permission_code, viewname, permission_content, disabled, deleted, 
+    cruser, crtime, mduser, mdtime
+    from sys_permission
+    where deleted = 0
+  </select>
+  
+  <select id="query" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    select id, pid, permission_code, viewname, permission_content, disabled, deleted, 
+    cruser, crtime, mduser, mdtime
+    from sys_permission where deleted = 0 and  pid = #{pid,jdbcType=INTEGER}
+  </select>
+  
+  <select id="getRoot" resultMap="BaseResultMap">
+    select id, pid, permission_code, viewname, permission_content, disabled, deleted, 
+    cruser, crtime, mduser, mdtime
+    from sys_permission
+    where disabled = 0 and deleted = 0 and pid = 0
+  </select>
+  
+</mapper>
